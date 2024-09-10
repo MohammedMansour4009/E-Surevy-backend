@@ -1,9 +1,5 @@
-const express = require('express');
-const puppeteer = require('puppeteer');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const mongoose = require('mongoose');
-const {log} = require("debug"); // Assuming you're using Mongoose for MongoDB
 
 // Function to fetch data from the URL and extract shareId
 async function fetchProductDataWithCheerio(url) {
