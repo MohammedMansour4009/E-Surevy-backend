@@ -57,6 +57,22 @@ async function sendRequestWithGroupId(groupId) {
     }
 }
 
+// Function to convert the original image URL to the thumbnail format
+function convertImageUrlToThumbnail(url) {
+    if (!url) return '';
+
+    // Find the last occurrence of "_square" and add "_thumbnail_405x552.webp"
+    const urlParts = url.split('_square');
+    if (urlParts.length > 1) {
+        return `https:${urlParts[0]}_square_thumbnail_405x552.webp`;
+    }
+
+
+    url  = `https:${url}`
+    // If "_square" is not found, return the original URL
+
+    return url;
+}
 
 // Function to map the response to simplified names
 function mapGoodsDataToSimpleNames(originalResponse) {
@@ -81,7 +97,8 @@ function mapGoodsDataToSimpleNames(originalResponse) {
         attr_name: good.sku_main_sale_attr.attr_name,  // Renamed from sku_main_sale_attr to attr_name
         attr_value: good.sku_main_sale_attr.attr_value_name,  // Renamed from sku_main_sale_attr to attr_value
         priceBeforeSele: (good.retail_price.usdAmount * usdToJodRate).toFixed(2), // Convert retail_price to JOD
-        price: (good.sale_price.usdAmount * usdToJodRate).toFixed(2)  // Convert sale_price to JOD
+        price: (good.sale_price.usdAmount * usdToJodRate).toFixed(2),  // Convert sale_price to JOD
+        imageThumbnail: convertImageUrlToThumbnail(good.goods_img)  // Convert image URL to thumbnail format
     }));
 
     console.log(`mappedGoods ${mappedGoods.length}`);
