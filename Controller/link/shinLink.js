@@ -61,13 +61,15 @@ async function sendRequestWithGroupId(groupId) {
 // Function to map the response to simplified names
 function mapGoodsDataToSimpleNames(originalResponse) {
     // Check if the goods property exists
-
-    console.log('goods from API:', originalResponse.data);
+    console.log('goods from API originalResponse:', originalResponse.data);
 
     // Extract the goods data from the original response
     const goods = originalResponse.data.goods;
     console.log('goods from API:', originalResponse.data);
     console.log('goods from API:', goods);
+
+    // Define the conversion rate from USD to JOD
+    const usdToJodRate = 0.7086519314; // Example exchange rate, you can update it or fetch it dynamically
 
     // Map each item in the goods array to the desired structure with simplified names
     const mappedGoods = goods.map(good => ({
@@ -78,14 +80,15 @@ function mapGoodsDataToSimpleNames(originalResponse) {
         product_value: good.sku_sale_attr[0]?.attr_value_name,  // Renamed sku_sale_attr to product_value
         attr_name: good.sku_main_sale_attr.attr_name,  // Renamed from sku_main_sale_attr to attr_name
         attr_value: good.sku_main_sale_attr.attr_value_name,  // Renamed from sku_main_sale_attr to attr_value
-        priceBeforeSele:good.retail_price.amount,
-        price:good.sale_price.amount
+        priceBeforeSele: (good.retail_price.usdAmount * usdToJodRate).toFixed(2), // Convert retail_price to JOD
+        price: (good.sale_price.usdAmount * usdToJodRate).toFixed(2)  // Convert sale_price to JOD
     }));
 
     console.log(`mappedGoods ${mappedGoods.length}`);
 
     return mappedGoods;
 }
+
 
 // Endpoint to parse link and fetch product data
 exports.parseLink = async (req, res) => {
